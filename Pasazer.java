@@ -7,6 +7,7 @@ public class Pasazer {
 	private String plec;
 	private int wiek;
 	
+	// konstruktor
 	public Pasazer(String imieP, String nazwiskoP, String plecP, int wiekP){
 		
 		imie = imieP;
@@ -15,6 +16,15 @@ public class Pasazer {
 		wiek = wiekP;
 	}
 	
+	// metoda do wyswietlania informacji na temat pasażera
+	public void wyswietlInfoPasazera(){
+		System.out.println("Imie     : " + imie);
+		System.out.println("Nazwisko : " + nazwisko);
+		System.out.println("Płeć     : " + plec);
+		System.out.println("Wiek     : " + wiek );
+	}
+	
+	// getters
 	public String getImie(){
 		return imie;
 	}
