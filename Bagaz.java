@@ -1,28 +1,9 @@
 package OBI;
 
-
-public class Bilet {
+public class Bagaz {
 	
 	private Pasazer pasazer;
 	private Lot lot;
-	private String numerMiejsca;
-	private float cenaBiletu;
-	private Bagaz bagaz;
+	private int wagaBagazu;
 	
-	// konstruktor1 (pasażer leci z bagażem)
-	public Bilet(Pasazer pas, Lot l, String miejsceNr, float cena, Bagaz bag){
-		pasazer = pas;
-		lot = l;
-		numerMiejsca = miejsceNr;
-		cenaBiletu = cena;
-		bagaz = bag;
-	}
-	// konstruktor2 (pasażer leci bez bagazu)
-	public Bilet(Pasazer pas, Lot l, String miejsceNr, float cena){
-		pasazer = pas;
-		lot = l;
-		numerMiejsca = miejsceNr;
-		cenaBiletu = cena;
-	}
-
 }
