@@ -3,14 +3,16 @@ package OBI;
 
 public class Lot {
 	
+	private String numerLotu;
 	private String poczatekTrasy;
 	private String koniecTrasy;
 	private String dataWylotu;
 	private String dataPrzylotu;
 	private Samolot samolot;
-	
-	public Lot(String poczTrasy, String konTrasy, String dataWyl, String dataPrzyl,Samolot sam){
 		
+	public Lot(String lotNr, String poczTrasy, String konTrasy, String dataWyl, String dataPrzyl,Samolot sam){
+		
+		numerLotu = lotNr;
 		poczatekTrasy = poczTrasy;
 		koniecTrasy = konTrasy;
 		dataWylotu = dataWyl;
@@ -18,15 +20,10 @@ public class Lot {
 		samolot = sam;
 	}
 
-	// metoda do wyswietlania informacji o locie
-	public void wyswietlInfoLotu(){
-		System.out.println("Lot relacji   : " + this.getPoczatekTrasy() + "-" + this.getKoniecTrasy());
-		System.out.println("Data wylotu   : " + this.getDataWylotu());
-		System.out.println("Data przylotu : " + this.getDataPrzylotu());
-		System.out.println("Typ samolotu  : " + this.samolot.getModelSamolotu());
-	}
-	
 	// getters
+	public String getNumerLotu(){
+		return numerLotu;
+	}
 	public String getPoczatekTrasy(){
 		return poczatekTrasy;
 	}
@@ -44,6 +41,9 @@ public class Lot {
 	}
 	
 	// setters
+	public void setNumerLotu(String lotNr){
+		numerLotu = lotNr;
+	}
 	public void setPoczatekTrasy(String poczTrasy){
 		poczatekTrasy = poczTrasy;
 	}
@@ -67,4 +67,13 @@ public class Lot {
 	public void setSamolotObslugujacyLot(Samolot sam){
 		samolot = sam;
 	}
+	
+	// metoda do wyswietlania informacji o locie
+		public void wyswietlInfoLotu(){
+			System.out.println("Numer lotu    : " + numerLotu);
+			System.out.println("Lot relacji   : " + this.getPoczatekTrasy() + "-" + this.getKoniecTrasy());
+			System.out.println("Data wylotu   : " + this.getDataWylotu());
+			System.out.println("Data przylotu : " + this.getDataPrzylotu());
+			System.out.println("Typ samolotu  : " + this.samolot.getModelSamolotu());
+		}
 }
