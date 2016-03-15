@@ -16,16 +16,7 @@ public class Samolot {
 		dataProdukcji = rokProd;
 		dataOstatniegoPrzegladu = ostPrzegl;
 	}
-	
-	// metoda do wyswietlania informacji o samolocie
-	public void wyswietlSzczegolySamolotu(){
 		
-		System.out.println("Model samolotu : " + this.getModelSamolotu());
-		System.out.println("Ilość miejsc   : " + this.getLiczbaMiejsc());
-		System.out.println("Data produkcji : " + this.getDataProdukcji());
-		System.out.println("Data przeglądu : " + this.getDatOstatniegoPrzegladu());
-	}
-	
 	// getters
 	public String getModelSamolotu(){
 		return modelSamolotu;
@@ -44,4 +35,13 @@ public class Samolot {
 	public void setDataOstatniegoPrzeglądu (String dataPrzegladu){
 		dataOstatniegoPrzegladu = dataPrzegladu;
 	}
+	
+	// metoda do wyswietlania informacji o samolocie
+		public void wyswietlSzczegolySamolotu(){
+			
+			System.out.println("Model samolotu : " + this.getModelSamolotu());
+			System.out.println("Ilość miejsc   : " + this.getLiczbaMiejsc());
+			System.out.println("Data produkcji : " + this.getDataProdukcji());
+			System.out.println("Data przeglądu : " + this.getDatOstatniegoPrzegladu());
+		}
 }
