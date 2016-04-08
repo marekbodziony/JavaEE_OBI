@@ -1,27 +1,122 @@
 package OBI;
 
 
+import java.util.GregorianCalendar;
+
+import OBI.Pasazer.TypPasazera;
+
 public class RezerwujBilet {
 
 	public static void main(String[] args) {
 
-		//Baza dostepnych samolotow
-		Samolot airForceOne = new Samolot("Boeing-747",70,"01.01.2002","13.07.2013");
-		Samolot samolotAirbus = new Samolot("Airbus A320",120,"08.01.1991","10.03.2015");
-				
+		// Baza lotnisk
+		Lotnisko londynHeathrow = new Lotnisko("Heathrow Airport", "HTR", "Londyn", "Wielka Brytania");
+		Lotnisko wawaChopin = new Lotnisko("Warsaw Chopin Airport", "WAW", "Warszawa", "Polska");
+		Lotnisko wawaModlin = new Lotnisko("Warsaw Modlin Airport", "WMI", "Modlin", "Polska");
+		Lotnisko chicagoOhare = new Lotnisko("O’Hare International Airport", "ORD", "Chicago", "Stany Zjednoczone");
+		
 		// Baza dostępnych lotów
-		Lot lotVIP = new Lot("FL241","Chicago","Londyn","09:30, 12.03.2016","17:00, 12.03.2016", airForceOne);
-		Lot WroKrak = new Lot("AB789","Wroclaw","Krakow","07:20, 17.03.2016","08:05, 17.03.2016", samolotAirbus);
-				
-		//Pasazerowie
-		Pasazer pasazerVip = new Pasazer("Barack","Obama","M",45,lotVIP);
-		Pasazer pasazer1 = new Pasazer("Jan","Kowalski","M",35,WroKrak,21);
-		Pasazer pasazer2 = new Pasazer("Anna","Michalik","F",31,WroKrak,18);
+		Lot wawaChop_chicago = new Lot("LO3923", wawaChopin, chicagoOhare, 7512.74f, new GregorianCalendar(2016,04,20, 14,35), new GregorianCalendar(2016,04,20, 15,50), 150);
+		Lot chicago_londyn = new Lot("WI1087", chicagoOhare, londynHeathrow, 6356.69f, new GregorianCalendar(2016,05,13, 05,00), new GregorianCalendar(2016,05,13, 12,30), 190);
+		Lot londyn_wawaChop = new Lot("LO2205", londynHeathrow, wawaChopin, 7512.74f, new GregorianCalendar(2016,05,13, 18,00),new GregorianCalendar(2016,05,13, 20,10), 180);
+		Lot wawaMod_londyn = new Lot("FR1730", wawaModlin, londynHeathrow, 1448.29f, new GregorianCalendar(2016,06,01, 17,00), new GregorianCalendar(2016,06,01, 18,20), 120);
+		
+		// Baza pasazerow
+		Pasazer p1 = new Pasazer("Marek","Bodziony",TypPasazera.MR);
+		Pasazer p2 = new Pasazer("Nikodem","Bodziony",TypPasazera.CHLD);
+		Pasazer p3 = new Pasazer("Janina", "Kowalska",TypPasazera.MRS);
+		Pasazer p4 = new Pasazer("Ania","Kowalska",TypPasazera.INF);
 				
 		
-		//Rezeracja biletu
-		Bilet bilet = new Bilet(001502322376, pasazerVip,"21A",45.50f);
-		bilet.drukujBilet();
+				
 		
+		//--------------------- SYSTEM REZERWACJI BILETOW -------------------------------
+		
+		// ----------- 0. Wyszukanie lotu, podanie danych pasazera ----------------------
+		Lot lot = chicago_londyn;
+		Pasazer pasazer = p1;
+		
+		
+		// ----------- 1. Rezeracja biletu ----------------------------------------------
+		Bilet ticket = rezerwujBilet(lot,pasazer);				// tworzy nowa rezerwacje (nowy bilet) na lot dla pasazera (z bazy danych)
+		//ticket.dodajBagaz(new Bagaz());						// mozna dodac bagaz podczas rezerwacji lub podczas odprawy
+		//ticket.usunBagaz();		
+		
+		
+		// ----------- 2. Platnosc za bilet ------------------
+		System.out.println("> Cena biletu = " + ticket.getCenaBiletu() + " \u20AC");
+		oplacBilet(ticket);
+	
+		
+		// ----------- 3. Anulowanie biletu -------------------
+		//anulujBilet(ticket);
+		
+		// ----------- 4. Odprawa biletu ----------------------
+		//ticket.dodajBagaz(new Bagaz(27));
+		//System.out.println("> Cena biletu = " + ticket.getCenaBiletu());
+		//oplacBilet(ticket);
+		odprawBilet(ticket);
+		
+		
+		// ----------- 5. Zrealizowano bilet (KONIEC PORCESU) -----
+		zrealizujBilet(ticket);
+		
+	}
+	
+
+	// metoda do rezerwacji biletu na lot - dane pasazera z bazy
+	public static Bilet rezerwujBilet(Lot lot, Pasazer pasazer){
+		Bilet bilet = new Bilet(lot,pasazer);
+		pasazer.dodajBiletDoListy(bilet);
+		lot.dodajBiletDoListy(bilet);
+		
+		for (Bilet biletTemp : lot.getListaBiletow()){
+			if (bilet.getNrBiletu().equals(biletTemp.getNrBiletu())) { 
+				bilet.setCzyBiletAktywny(true);
+				break;
+			}
+		}
+		if (bilet.getCzyBiletAktywny()) System.out.println("OK! Bilet o nr " + bilet.getNrBiletu() + " zostal zarezerowany. Prosze oplacic bilet.");
+		else {
+			System.out.println("BLAD! Brak wolnych miejsc na dany lot!");
+			anulujBilet(bilet);
+		}
+		return bilet;
+	}
+	
+	// metoda do anulowania rezerwacji
+	public static void anulujBilet(Bilet bilet){
+		if (!bilet.getCzyBiletAktywny()){ System.out.println("BLAD! Nie znaleziono biletu do anulowania"); return;}
+		bilet.getLot().usunBiletZListy(bilet);
+		bilet.getPasazer().usunBiletZListy(bilet);
+		bilet.setCzyBiletAktywny(false);
+	}
+	// metoda do oplacania bileu
+	public static void oplacBilet(Bilet bilet){
+		if (!bilet.getCzyBiletAktywny()){ System.out.println("BLAD! Nie znaleziono biletu do oplacenia"); return;}
+		if (bilet.getCzyBiletOplacony()){ System.out.println("BLAD! Bilet juz zostal oplacony"); return;}
+	
+		bilet.setBiletOplacony();
+		System.out.println("Oplacono bilet.");
+	}
+	// metoda do odprawiania biletu
+	public static void odprawBilet(Bilet bilet){
+		if (!bilet.getCzyBiletAktywny()){ System.out.println("BLAD! Nie znaleziono biletu do odprawy"); return;}
+		if (bilet.getCzyBiletOplacony() && !bilet.getCzyBiltOdprawiony()) {
+			bilet.setBiletOdprawiony();
+			bilet.przydzielNumerMiejsca();
+			//bilet.getLot().dodajBiletDoListy(bilet);
+			System.out.println("Odprawiono bilet. Milej podrozy!");
+		}
+		else if (!bilet.getCzyBiletOplacony()) System.out.println("BLAD! Bilet jeszcze nie oplacony");
+		else if (bilet.getCzyBiletOplacony() && bilet.getCzyBiltOdprawiony()) System.out.println("BLAD! Bilet juz zostal odprawiony");				
+	}
+
+	private static void zrealizujBilet(Bilet ticket) {
+		if(ticket.getCzyBiltOdprawiony() && ticket.getCzyBiletAktywny()){
+			ticket.setCzyBiletAktywny(false);
+			ticket.getPasazer().usunBiletZListy(ticket);
+			System.out.println("Bilet zrealizowany. Dziekujemy.");
+		}
 	}
 }
