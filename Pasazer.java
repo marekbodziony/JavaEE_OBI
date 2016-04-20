@@ -48,11 +48,12 @@ public class Pasazer {
 	public void wyswietlListeBiletow(){
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 		int i = 1;
+		System.out.println("Lista lotow pasazera : " + imie + ", " + nazwisko +  ", "  + this.getTypPasazera().name()); 
 		if (listaBiletowPasazera.size() > 0){
 			for (Bilet bilet : listaBiletowPasazera){	
 				System.out.println(i++ + ". " + bilet.getNrBiletu() + ", Lot: " + bilet.getLot().getNumerLotu() + ", Trasa: " + bilet.getLot().getMiejsceWylotu().getMiasto() + " - " 
 								+ bilet.getLot().getMiejscePrzylotu().getMiasto() + ", Data wylotu: " + sdf.format(bilet.getLot().getDataWylotu().getTime())
-								+ "\t | Oplacony : " + bilet.getCzyBiletOplacony() + " | Odprawiony : " + bilet.getCzyBiltOdprawiony());}
+								+ "\t | Oplacony : " + bilet.getCzyBiletOplacony() + " | Odprawiony : " + bilet.getCzyBiletOdprawiony());}
 			System.out.println("------------------------ koniec wydruku -------------------------");
 		}
 		else{ System.out.println("- Brak biletow do wyswietlenia -");}
