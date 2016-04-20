@@ -13,7 +13,7 @@ public class Bilet {
 	private boolean czyOplacony;
 	private boolean czyOdprawiony;
 	public static int liczbaRezerwowanychBiletow;
-	private boolean czyBiletAktywny;
+	private boolean czyRezerwacjaAktywna;
 	
 	// konstruktor - tworzy nowy bilet (rezerwacje)
 	public Bilet(Lot lotB, Pasazer pasazerB){
@@ -22,12 +22,12 @@ public class Bilet {
 		cenaBiletu = obliczCeneBiletu();
 		liczbaRezerwowanychBiletow++;
 		numerBiletu = generujNumerBiletu();
-		czyBiletAktywny = true;
+		//czyBiletAktywny = true;
 	}
 	
 	// motoda dodaje bagaz do biletu pasazera
 	public void dodajBagaz (Bagaz bagazB){
-		if (czyBiletAktywny && !czyOdprawiony){
+		if (czyRezerwacjaAktywna && !czyOdprawiony){
 			bagaz = bagazB;
 			cenaBiletu = obliczCeneBiletu();
 			czyOplacony = false;
@@ -36,7 +36,7 @@ public class Bilet {
 	}
 	// metoda usuwa bagaz z biletu pasazera
 	public void usunBagaz(){
-		if (czyBiletAktywny && !czyOplacony){
+		if (czyRezerwacjaAktywna && !czyOplacony){
 			bagaz = null;
 			cenaBiletu = obliczCeneBiletu();
 		}
@@ -44,18 +44,19 @@ public class Bilet {
 	}
 	// metoda przydziela pasazerowi miejsca
 	public void przydzielNumerMiejsca(){ 
-		int [] numeryBiletow = new int [lot.getMaksymalnaLiczbaPasazerow()];
-		for(int i = 0; i < numeryBiletow.length; i++) {numeryBiletow[i] = i+1; }
+		int [] dostepneNumeryBiletow = new int [lot.getMaksymalnaLiczbaPasazerow()];
+		for(int i = 0; i < dostepneNumeryBiletow.length; i++) {dostepneNumeryBiletow[i] = i+1; }
 		for (Bilet bilet : lot.getListaBiletow()){
-			for (int i = 0; i < numeryBiletow.length; i++) {
-				if (bilet.getNrMiejsca() == numeryBiletow[i]){
-					numeryBiletow[i] = 0;
+			for (int i = 0; i < dostepneNumeryBiletow.length; i++) {
+				if (bilet.getNrMiejsca() == dostepneNumeryBiletow[i]){
+					dostepneNumeryBiletow[i] = 0;
 				}
 			} 
 		}
-		for (int i = 0; i < numeryBiletow.length; i++) {
-			if (numeryBiletow[i] != 0) {
-				numerMiejsca = numeryBiletow[i];
+		for (int i = 0; i < dostepneNumeryBiletow.length; i++) {
+			if (dostepneNumeryBiletow[i] != 0) {
+				numerMiejsca = dostepneNumeryBiletow[i];
+				System.out.println("Przydzielono miejsce : " + numerMiejsca );
 				return;
 			}
 			
@@ -78,7 +79,7 @@ public class Bilet {
 		else System.out.println("Oplacony bilet\t: NIE");
 		if (czyOdprawiony) System.out.println("Odprawiony \t: TAK");
 		else System.out.println("Odprawiony \t: NIE");
-		if (czyBiletAktywny) System.out.println("Bilet aktywny? \t: TAK (!)");
+		if (czyRezerwacjaAktywna) System.out.println("Bilet aktywny? \t: TAK (!)");
 		else System.out.println("Bilet aktywny? \t: NIE (!)");
 	}
 	
@@ -90,14 +91,14 @@ public class Bilet {
 	public Bagaz getBagaz(){ return bagaz; }
 	public float getCenaBiletu(){ return cenaBiletu; }
 	public boolean getCzyBiletOplacony(){ return czyOplacony;}
-	public boolean getCzyBiltOdprawiony(){ return czyOdprawiony;}
-	public boolean getCzyBiletAktywny(){return czyBiletAktywny;}
+	public boolean getCzyBiletOdprawiony(){ return czyOdprawiony;}
+	public boolean getCzyRezerwacjaAktywnya(){return czyRezerwacjaAktywna;}
 	
 	// setters
 	public void setLot(Lot lotB){ lot = lotB; }
 	public void setPasazer(Pasazer pasazerB) { pasazer = pasazerB;}
 	public void setNumerMejsca (int nrMiejsca){ numerMiejsca = nrMiejsca;}
-	public void setCzyBiletAktywny(boolean czyAktywny) { czyBiletAktywny = czyAktywny;}
+	public void setCzyRezerwacjaAktywna(boolean czyAktywna) { czyRezerwacjaAktywna = czyAktywna;}
 	
 	// metoda ustawia parametr oplacony
 	public boolean setBiletOplacony(){ return czyOplacony = true;}
@@ -128,7 +129,7 @@ public class Bilet {
 	
 	// metoda drukuje bilet
 		public void drukujBilet(){
-			if (czyOplacony && czyOdprawiony && czyBiletAktywny){
+			if (czyOplacony && czyOdprawiony && czyRezerwacjaAktywna){
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 				System.out.println("\n******************************************************************************");
 				System.out.println("*                                                          Ticket No. " + numerBiletu + " *");
@@ -145,5 +146,5 @@ public class Bilet {
 			}
 			else { System.out.println("BLAD! Bilet nie oplacony i/lub nie odprawiony lub bilet nie jest juz aktywny!");}
 		}
-		
+	
 }
