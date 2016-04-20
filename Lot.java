@@ -15,6 +15,7 @@ public class Lot {
 	private GregorianCalendar dataPrzylotu;
 	private int maksymalnaLiczbaPasazerow;
 	private List<Bilet> listaBiletow = new ArrayList<Bilet>();
+	private boolean czyLotZrealizowany;
 	
 	// constructor	
 	public Lot(String lotNr, Lotnisko miejsceWyl, Lotnisko miejscePrzyl, float dlugTrasy, GregorianCalendar dataWyl, GregorianCalendar dataPrzyl, int maksLiczbaPasazerow){
@@ -40,6 +41,7 @@ public class Lot {
 		System.out.println("\nDlugosc trasy : " + dlugoscTrasy + " km");
 		System.out.println("Maksymalna liczba pasazerow na ten lot : " + maksymalnaLiczbaPasazerow + " osob");
 		System.out.println("Ilosc zarezerwowanych miejsc (biletow) : " + listaBiletow.size());
+		System.out.println("Czy lot zrealizowany : " + czyLotZrealizowany);
 	}
 	
 	// metoda dodaje bilet do listy biletow danego lotu (jesli sa wolne miejsca)
@@ -49,27 +51,40 @@ public class Lot {
 	}
 	// metoda usuwa bilet z listy biletow danego lotu
 	public void usunBiletZListy (Bilet bilet){
-		boolean czyUsunietoBilet = false;
+		if(listaBiletow.size() == 0) {System.out.println("BLAD! Nie usunieto biletu z listy lotu. Brak biletow na liscie."); return;}
 		for (int i = 0; i < listaBiletow.size(); i++){
 			if(bilet.getNrBiletu().equals(listaBiletow.get(i).getNrBiletu())){
 				listaBiletow.remove(i);
-				bilet.setNumerMejsca(0);
-				//System.out.println("Usunieto wpis z pozycji : " + (i+1));
-				czyUsunietoBilet = true;
-				break;
+				System.out.println("Usunieto bilet nr " + bilet.getNrBiletu());
+				return;
 			}
 		}
-		 if (!czyUsunietoBilet) System.out.println("BLAD! Wskazany bilet nie jest przypisany do lotu");
+		System.out.println("BLAD! Brak wskazanego biletu na liscie ");
 	}
+	
+	// metoda do zrealizowania lotu
+	public void zrealizujLot() {
+		// jesli lot zostal juz zrealizowany	
+		if (czyLotZrealizowany) {System.out.println("Blad! Lot " + numerLotu + " zostal juz zrealizowany"); return;}
+		// jesli lot nie zostal jeszcze zrealizowany (usun bilety z lis wszystkich pasazerow)
+		// usun bilet z listy pasazera (juz lot sie odbyl) i ustaw status rezerwacji (biletu) na nieaktywna
+		for (Bilet bilet : listaBiletow){
+			bilet.getPasazer().usunBiletZListy(bilet);
+			bilet.setCzyRezerwacjaAktywna(false);
+		}
+		czyLotZrealizowany = true;
+		System.out.println("OK! Lot " + numerLotu + " zostal zrealizowany!");
+		}
+	
 	// metoda do wyswietla liste biletow dla danego lotu
 	public void wyswietlListeBiletow(){
 		int i = 1;
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-		System.out.println("Lot: " + numerLotu + ", Trasa: " + miejsceWylotu.getMiasto() + " - " + miejscePrzylotu.getMiasto() + ", Data wylotu: " + sdf.format(dataWylotu.getTime()));
+		System.out.println("Lot: " + numerLotu + ", Trasa: " + miejsceWylotu.getMiasto() + " - " + miejscePrzylotu.getMiasto() + ", Data wylotu: " + sdf.format(dataWylotu.getTime()) + ", ZREALIZOWANY: " + czyLotZrealizowany);
 		if (listaBiletow.size() > 0){
 			for (Bilet bilet : listaBiletow){
 				System.out.println(i++ + ". " + bilet.getNrBiletu() + ", " + bilet.getPasazer().getImie() + ", " + bilet.getPasazer().getNazwisko() + " (" + bilet.getPasazer().getTypPasazera().name() +
-						 "), Nr miejsca: " + bilet.getNrMiejsca() + "\t\t | Oplacony : " + bilet.getCzyBiletOplacony() + " | Odprawiony : " + bilet.getCzyBiltOdprawiony());
+						 "), Nr miejsca: " + bilet.getNrMiejsca() + "\t\t | Oplacony : " + bilet.getCzyBiletOplacony() + " | Odprawiony : " + bilet.getCzyBiletOdprawiony());
 				
 			}
 		}
@@ -85,6 +100,7 @@ public class Lot {
 	public GregorianCalendar getDataPrzylotu(){ return dataPrzylotu; }
 	public int getMaksymalnaLiczbaPasazerow(){ return maksymalnaLiczbaPasazerow;}
 	public List<Bilet> getListaBiletow(){ return listaBiletow;}
+	public boolean getCzyLotZrealizowany() {return czyLotZrealizowany;}
 	
 	// setters
 	public void setNumerLotu(String lotNr){ numerLotu = lotNr; }
@@ -93,4 +109,5 @@ public class Lot {
 	public void setDlugoscTrasy(float dlugTrasy){ dlugoscTrasy = dlugTrasy;}
 	public void setDataWylotu(GregorianCalendar dataWyl){ dataWylotu = dataWyl; }
 	public void setDataPrzylotu(GregorianCalendar dataPrzyl){ dataPrzylotu = dataPrzyl; }
+	public void setCzyLotZrealizowany(boolean czyZrealizowany) {czyLotZrealizowany = czyZrealizowany;}
 }
